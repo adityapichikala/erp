@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServerClient } from '@/lib/supabase-server'
 import { uploadFile } from '@/lib/storage'
+import crypto from 'crypto'
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,18 +29,26 @@ export async function POST(req: NextRequest) {
       documentsUrl = await uploadFile(buffer, fileName, document.type)
     }
 
-    const admission = await db.admission.create({
-      data: {
-        applicantName,
-        email: email.toLowerCase().trim(),
-        phone,
-        programAppliedFor,
-        documentsUrl,
-        status: 'PENDING'
-      }
+    const supabase = createServerClient()
+    const admissionId = crypto.randomUUID()
+    
+    const { error } = await supabase.from('Admission').insert({
+      id: admissionId,
+      applicantName,
+      email: email.toLowerCase().trim(),
+      phone,
+      programAppliedFor,
+      documentsUrl,
+      status: 'PENDING',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     })
 
-    return NextResponse.json({ success: true, id: admission.id }, { status: 201 })
+    if (error) {
+      throw error
+    }
+
+    return NextResponse.json({ success: true, id: admissionId }, { status: 201 })
   } catch (error) {
     console.error('Error in admission application:', error)
     return NextResponse.json({ error: 'Failed to submit application' }, { status: 500 })

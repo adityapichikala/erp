@@ -1,18 +1,18 @@
 import type { Metadata } from 'next'
-import { Inter, Source_Serif_4 } from 'next/font/google'
+import { Manrope, Plus_Jakarta_Sans } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({
+const manrope = Manrope({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-inter', // keep the variable name to avoid refactoring CSS
   display: 'swap',
 })
 
-const sourceSerif4 = Source_Serif_4({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  variable: '--font-serif',
+  variable: '--font-serif', // keep the variable name to avoid refactoring CSS
   display: 'swap',
-  weight: ['300', '400', '600', '700'],
+  weight: ['400', '500', '600', '700'],
 })
 
 export const metadata: Metadata = {
@@ -28,7 +28,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${sourceSerif4.variable} h-full`}
+      className={`${manrope.variable} ${plusJakartaSans.variable} h-full`}
     >
       <body className="min-h-full bg-background text-foreground antialiased">
         {children}

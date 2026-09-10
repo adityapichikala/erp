@@ -2,18 +2,18 @@
 
 /* ─── Design Tokens ─────────────────────────────────────────────────────────── */
 :root {
-  /* Palette */
-  --color-navy:      #12213C;   /* primary actions, nav, headings */
-  --color-navy-dark: #0b1727;   /* darker navy for hover states */
-  --color-off-white: #FAF8F3;   /* page background */
-  --color-slate:     #5B6472;   /* secondary text, captions */
-  --color-gold:      #C9A24B;   /* accent — use sparingly */
-  --color-gold-light:#f0d98e;   /* lighter gold for hover on dark bg */
-  --color-border:    #DDD8CE;   /* hairline dividers */
+  /* Palette - Apex Academic Portal Design System */
+  --color-navy:      #0F172A;   /* Primary: Midnight Slate / Deep Navy */
+  --color-navy-dark: #0B1221;   /* darker navy for hover states */
+  --color-off-white: #F8FAFC;   /* page background */
+  --color-slate:     #45464D;   /* secondary text, captions (on-surface-variant) */
+  --color-gold:      #4F46E5;   /* Secondary: Electric Indigo (replaced gold) */
+  --color-gold-light:#6366F1;   /* lighter indigo for hover */
+  --color-border:    #E2E8F0;   /* hairline dividers */
   --color-surface:   #FFFFFF;   /* card/panel background */
-  --color-error:     #C0392B;   /* error / destructive */
-  --color-success:   #1a7a4a;   /* success states */
-  --color-warning:   #B45309;   /* warning states */
+  --color-error:     #F43F5E;   /* Critical Rose */
+  --color-success:   #10B981;   /* Soft Emerald */
+  --color-warning:   #F59E0B;   /* Deadline Amber */
 
   /* Aliases mapped to Tailwind tokens */
   --background: var(--color-off-white);
@@ -40,10 +40,16 @@
   --font-sans:   var(--font-inter), system-ui, sans-serif;
   --font-serif:  var(--font-serif), Georgia, serif;
 
-  /* Border Radius — institutional feel: subtle, not pill-shaped */
-  --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius-lg: 6px;
+  /* Border Radius — from Apex Academic Portal */
+  --radius-sm: 4px;   /* 0.25rem for base UI */
+  --radius-md: 6px;   /* 0.375rem for buttons */
+  --radius-lg: 8px;   /* 0.5rem for cards */
+  --radius-xl: 12px;  /* 0.75rem for large modals */
+
+  /* Box Shadows - Ambient Glass Accents */
+  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.03), 0 4px 12px 0 rgba(15, 23, 42, 0.04); /* Level 1 */
+  --shadow-md: 0 8px 20px -2px rgba(79, 70, 229, 0.06), 0 4px 8px -2px rgba(15, 23, 42, 0.04); /* Level 2 / Hover */
+  --shadow-lg: 0 12px 32px -4px rgba(15, 23, 42, 0.12); /* Level 3 / Menus */
 }
 
 /* ─── Base Styles ───────────────────────────────────────────────────────────── */

@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs'
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServerClient } from '@/lib/supabase-server'
 import { signToken, SESSION_COOKIE, SessionUser } from '@/lib/auth'
 import { getDashboardPath } from '@/lib/roles'
 
@@ -16,20 +16,20 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Look up user by email
-    const user = await db.user.findUnique({
-      where: { email: email.toLowerCase().trim() },
-      select: {
-        id:           true,
-        name:         true,
-        email:        true,
-        passwordHash: true,
-        role:         true,
-        status:       true,
-        collegeId:    true,
-        departmentId: true,
-      },
-    })
+    // Look up user by email via Supabase REST (HTTPS — works behind firewall)
+    const supabase = createServerClient()
+    const { data: users, error } = await supabase
+      .from('User')
+      .select('id, name, email, passwordHash, role, status, collegeId, departmentId')
+      .eq('email', email.toLowerCase().trim())
+      .limit(1)
+
+    if (error) {
+      console.error('[POST /api/auth/login] Supabase error:', error)
+      return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    }
+
+    const user = users?.[0] ?? null
 
     // Generic error — don't reveal whether email or password was wrong
     const INVALID_MSG = 'Invalid credentials. Please try again.'

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServerClient } from '@/lib/supabase-server'
 import { getSessionUserFromCookies } from '@/lib/auth'
 
 export const GET = async (req: NextRequest) => {
@@ -7,58 +7,44 @@ export const GET = async (req: NextRequest) => {
     const user = await getSessionUserFromCookies()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    // Find classes user is associated with (student enrollments or teacher assignments)
-    let classIds: string[] = []
-    
-    if (user.role === 'STUDENT') {
-      const enrollments = await db.courseEnrollment.findMany({ where: { studentId: user.userId }, select: { classId: true } })
-      classIds = enrollments.map(e => e.classId)
-    } else if (user.role === 'TEACHER') {
-      const slots = await db.timetableSlot.findMany({ where: { course: { teacherId: user.userId } }, select: { classId: true } })
-      classIds = slots.map(s => s.classId)
-    }
+    const supabase = createServerClient()
 
-    const filters: any[] = []
-
-    // Base scoping logic:
-    // A notification is relevant if it targets everyone, OR targets the user's role, OR targets their department, OR targets their class.
-    
-    const scopeConditions: any[] = [
-      { targetRole: null, targetDepartmentId: null, targetClassId: null }, // Global
-      { targetRole: user.role }, // Role-specific
-    ]
-
-    if (user.departmentId) {
-      scopeConditions.push({ targetDepartmentId: user.departmentId })
-    }
-
-    if (classIds.length > 0) {
-      scopeConditions.push({ targetClassId: { in: classIds } })
-    }
-
-    const whereClause: any = {
-      OR: scopeConditions
-    }
+    // Fetch notifications for this college scoped to the user's role
+    let query = supabase
+      .from('Notification')
+      .select(`
+        id, title, body, targetRole, targetDepartmentId, targetClassId, collegeId, createdAt,
+        reads:NotificationRead(userId)
+      `)
+      .order('createdAt', { ascending: false })
+      .limit(50)
 
     if (user.collegeId) {
-      whereClause.collegeId = user.collegeId
+      query = query.eq('collegeId', user.collegeId)
     }
 
-    const notifications = await db.notification.findMany({
-      where: whereClause,
-      include: {
-        reads: {
-          where: { userId: user.userId }
-        }
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 50 // Limit to last 50
+    const { data: notifications, error } = await query
+
+    if (error) {
+      console.error('[GET /api/notifications]', error)
+      return NextResponse.json({ notifications: [], unreadCount: 0 })
+    }
+
+    // Client-side filter by scope
+    const relevant = (notifications ?? []).filter((n: any) => {
+      if (!n.targetRole && !n.targetDepartmentId && !n.targetClassId) return true // global
+      if (n.targetRole === user.role) return true
+      if (n.targetDepartmentId && n.targetDepartmentId === user.departmentId) return true
+      return false
     })
 
-    const unreadCount = notifications.filter(n => n.reads.length === 0).length
+    const unreadCount = relevant.filter((n: any) =>
+      !n.reads?.some((r: any) => r.userId === user.userId)
+    ).length
 
-    return NextResponse.json({ notifications, unreadCount })
+    return NextResponse.json({ notifications: relevant, unreadCount })
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch notifications' }, { status: 500 })
+    console.error('[GET /api/notifications]', error)
+    return NextResponse.json({ notifications: [], unreadCount: 0 })
   }
 }
