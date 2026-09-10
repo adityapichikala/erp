@@ -1,0 +1,266 @@
+@import "tailwindcss";
+
+/* ─── Design Tokens ─────────────────────────────────────────────────────────── */
+:root {
+  /* Palette */
+  --color-navy:      #12213C;   /* primary actions, nav, headings */
+  --color-navy-dark: #0b1727;   /* darker navy for hover states */
+  --color-off-white: #FAF8F3;   /* page background */
+  --color-slate:     #5B6472;   /* secondary text, captions */
+  --color-gold:      #C9A24B;   /* accent — use sparingly */
+  --color-gold-light:#f0d98e;   /* lighter gold for hover on dark bg */
+  --color-border:    #DDD8CE;   /* hairline dividers */
+  --color-surface:   #FFFFFF;   /* card/panel background */
+  --color-error:     #C0392B;   /* error / destructive */
+  --color-success:   #1a7a4a;   /* success states */
+  --color-warning:   #B45309;   /* warning states */
+
+  /* Aliases mapped to Tailwind tokens */
+  --background: var(--color-off-white);
+  --foreground: var(--color-navy);
+}
+
+/* ─── Tailwind Theme Extension ──────────────────────────────────────────────── */
+@theme inline {
+  /* Colors */
+  --color-background:  var(--color-off-white);
+  --color-foreground:  var(--color-navy);
+  --color-primary:     var(--color-navy);
+  --color-primary-dark:var(--color-navy-dark);
+  --color-secondary:   var(--color-slate);
+  --color-accent:      var(--color-gold);
+  --color-accent-light:var(--color-gold-light);
+  --color-border:      var(--color-border);
+  --color-surface:     var(--color-surface);
+  --color-error:       var(--color-error);
+  --color-success:     var(--color-success);
+  --color-warning:     var(--color-warning);
+
+  /* Typography */
+  --font-sans:   var(--font-inter), system-ui, sans-serif;
+  --font-serif:  var(--font-serif), Georgia, serif;
+
+  /* Border Radius — institutional feel: subtle, not pill-shaped */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+}
+
+/* ─── Base Styles ───────────────────────────────────────────────────────────── */
+body {
+  background-color: var(--color-off-white);
+  color: var(--color-navy);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Headings use the serif display face */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-navy);
+}
+
+/* Hairline dividers — institutional, not card shadows */
+hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+}
+
+/* Links */
+a {
+  color: var(--color-navy);
+  text-decoration-color: var(--color-gold);
+}
+a:hover {
+  color: var(--color-gold);
+}
+
+/* Focus states — accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* Scrollbar — minimal */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-off-white);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-slate);
+}
+
+/* ─── Utility Classes ───────────────────────────────────────────────────────── */
+
+/* Page container */
+.page-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Section heading style */
+.section-heading {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-navy);
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 1.5rem;
+}
+
+/* Gold accent badge */
+.badge-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: var(--color-gold);
+  color: var(--color-navy);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Status badges */
+.badge-success {
+  background-color: #d1fae5;
+  color: var(--color-success);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+.badge-error {
+  background-color: #fee2e2;
+  color: var(--color-error);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+.badge-warning {
+  background-color: #fef3c7;
+  color: var(--color-warning);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+/* Primary button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-navy);
+  color: #ffffff;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-navy);
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease;
+  text-decoration: none;
+}
+.btn-primary:hover {
+  background-color: var(--color-navy-dark);
+  border-color: var(--color-navy-dark);
+  color: #ffffff;
+}
+
+/* Secondary button */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: var(--color-navy);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease;
+  text-decoration: none;
+}
+.btn-secondary:hover {
+  background-color: var(--color-border);
+}
+
+/* Form input */
+.form-input {
+  width: 100%;
+  background-color: var(--color-surface);
+  color: var(--color-navy);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color 150ms ease;
+}
+.form-input:focus {
+  border-color: var(--color-navy);
+}
+.form-input::placeholder {
+  color: var(--color-slate);
+}
+
+/* Form label */
+.form-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-slate);
+  margin-bottom: 0.375rem;
+  letter-spacing: 0.01em;
+}
+
+/* Data table */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.data-table th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-slate);
+  padding: 0.625rem 0.75rem;
+  border-bottom: 2px solid var(--color-border);
+}
+.data-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-navy);
+}
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+.data-table tbody tr:hover {
+  background-color: rgba(18, 33, 60, 0.025);
+}
